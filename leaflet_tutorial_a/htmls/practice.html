@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice</title>
+<style>
+    body{
+        background-color: cornflowerblue;
+    }
+    #map {
+        height: 380px;
+        background-color: antiquewhite;
+    }  /* this is the map boundary */
+</style>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+crossorigin=""/> <!--bringing a css file from leaflet, it is just a bunch of style-->
+
+
+</head>
+
+ <!-- Make sure you put this AFTER Leaflet's CSS -->
+ <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script> <!--bringing JS from internet location-->
+     <!-- this allows you to code in console -->
+
+
+    
+<body>
+    <h1> My first leaflet map</h1>
+    <div id="map"></div> 
+
+</body>
+
+<script>
+    var map = L.map('map').setView([35.91, -79.05], 13);
+    // library of leaflet is L (L.map is a meta that requires a property)
+    // 51.505 is lat, -0.09 is longitude
+
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map); 
+
+    L.marker([35.911271, -79.049807]).addTo(map)
+    .bindPopup('Hey I am at Carolina Hall 322') // YOU CAN CHANGE THE MESSAGE
+    .openPopup();
+    // class location! 
+    // leaflet NEEDS data in ESPG: 4326, you must reproject
+
+</script>
+</html>
