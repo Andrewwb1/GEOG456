@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assessment 2: Tropical Storm Ana Track</title>
+    <style>
+        body{
+            background-color: cornflowerblue;
+        }
+        #map {
+            height: 580px;
+            background-color: antiquewhite;
+        }  /* this is the map boundary */
+</style>
+    
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+crossorigin=""/> <!--bringing a css file from leaflet, it is just a bunch of style-->
+    
+    
+ </head>
+    
+<!-- Make sure you put this AFTER Leaflet's CSS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""></script> <!--bringing JS from internet location-->
+    <!-- this allows you to code in console -->
+    
+<script src="../A2/ana_track.js"></script>  <!-- Adding the JSON, but it needs to be in a js and declare the variable -->
+        
+ <body>
+    <h1> Track of Tropical Storm Ana</h1>
+    <div id="map"></div> 
+    
+</body>
+    
+<script>
+    var map = L.map('map').setView([33.933,-56.912], 6);
+    
+    L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map); 
+    
+    
+     // create custom icon variable
+    var hurri_icon = L.icon({    // notice the L.icon which is a Leaflet object with properties
+        iconUrl: '../A2/hurricane_icon.png',
+          // this points to a jpg image obtained from the internet
+        iconSize: [30,30], // size of the icon
+        popupAnchor: [0,0] // where the icon is located relative to the lat lon of the point. 
+        });
+    
+    // create an HTML variable that will pop up with a photo
+    var customPopup = "Tropical Storm Ana <br/><img src='https://npr.brightspotcdn.com/38/24/9e5b1fdf40629fa05bddf4760d66/5-22-21-ana-5p-nhc.png' width='220px'/>";
+    // YOU COULD CHANGE the https link to another picture. 
+    // YOU COULD CHANGE the 100px to other values like 50px or 400px to see what happens
+    
+    // the following line should go at the end, before script closing tag 
+    
+    L.geoJSON(track, {   // a
+    pointToLayer: function (feature, latlng) { // b
+    return L.marker(latlng, {icon: hurri_icon});}}) // c
+    .bindPopup(customPopup) // d
+    .addTo(map); // 
+        
+
+ </script>
+</html>
