@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+</style>
+</head>
+<script src="../HW4/data.js"></script>
+<body>
+
+
+<table id="myTable">
+    <tr>
+        <th>Name</th>
+        <th>Power Generated in 2019 (in GWh)</th>
+      </tr>
+</table>
+<script>
+    var x = document.getElementById('mytable')
+    
+    for (var i =0; i <data.length; i++){
+      var myNewRow = document.createElement('tr');
+      var myNewCell1 = document.createElement('td');
+      var myNewCell2 = document.createElement('td');
+  
+      myNewCell1.innerHTML = data[i].BPL;
+      myNewCell2.innerHTML = data[i].YEAR;
+  
+      // myNewCell2.innerHTML = Math.round([i].generation_gwh_2019 *100)/100;
+      // myNewCell2.innerHTML = checkType(data[i].generation_gwh_2019);
+      // myNewCell2.innerHTML = parseFloat(data[i].generation_gwh_2019).toFixed(2);
+  
+  
+  
+      // Assign color using if statements 
+      // if(data[i].generation_gwh_2019 > 39.7 ){ myNewCell2.style.backgroundColor = 'yellow'}
+      // if(data[i].generation_gwh_2019 <= 39.7 ){ myNewCell2.style.backgroundColor = 'grey'}
+      
+      // Assign color using a function 
+      // myNewCell2.style.backgroundColor = getBackgroundColor(data[i].generation_gwh_2019)
+  
+      //Assign color using class
+      // myNewCell2.className = getClassName(data[i].generation_gwh_2019)
+  
+      myNewRow.append(myNewCell1);
+      myNewRow.append(myNewCell2);
+      x.append(myNewRow);
+  
+    } // The loop ends 
+   
+  
+  
+    function checkType(value) {
+      if (typeof value === "string") {
+          return "String";
+      } else if (typeof value === "number") {
+          return "Number";
+      } else {
+          return "Other";
+      }
+  }
+  
+  function getBackgroundColor(d){
+    return d > 39.7 ? 'yellow' : 'gray';
+  }
+  
+  function getClassName(d){
+    return d > 39.7 ? 'high' : 'low';
+  }
+  
+  </script>
+</body>
+</html>
+

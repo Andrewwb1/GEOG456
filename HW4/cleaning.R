@@ -26,11 +26,12 @@ state_birthplace_summary <- state_birthplace_summary %>%
   left_join(state_codes, by = c("STATEFIP" = "st")) %>%
   rename(State = stname)  # Rename 'stname' to 'State'
 
-# Convert the cleaned data to JSON
-state_birthplace_summary_json <- toJSON(state_birthplace_summary, pretty = TRUE)
+# Define the list of states to keep
+selected_states <- c("Delaware", "District of Columbia", "Florida", "Georgia", 
+                     "Maryland", "North Carolina", "South Carolina", "Virginia", "West Virginia")
 
-# Save directly to a JSON file
-write(state_birthplace_summary_json, file = "state_birthplace_summary.json")
+# Filter dataset to only include these states
+filtered_data <- state_birthplace_summary %>%
+  filter(State %in% selected_states)
 
-# Print a preview of the JSON output
-head(state_birthplace_summary_json)
+write_csv(filtered_data, "filtered_state_birthplace_summary.csv")
