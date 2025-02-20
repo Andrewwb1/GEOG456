@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HW 4b</title>
 <style>
 table {
   font-family: arial, sans-serif;
@@ -21,35 +24,56 @@ tr:nth-child(even) {
 </head>
 <script src="../HW4/data.js"></script>
 <body>
+<h1>Atlantic Southern States' Population by Year and Contitent of Birth</h1>
+<h2>Color-Coded By Contitent of Birth</h2>
+<h2>Legend:</h2>
 
+    North America: Green <br> 
+    South America: Purple <br>
+    Europe: Orange <br>
+    Asia: Yellow <br>
+    Africa: Blue <br>
+    Grey: Unknown <br>
+    <!-- br inserts line break -->
 
 <table id="myTable">
     <tr>
-        <th>Name</th>
-        <th>Power Generated in 2019 (in GWh)</th>
+        <th>State</th>
+        <th>Year</th>
+        <th>Coded Birth Place (Will Change to Countries)</th>
+        <th>Population Born in that Country</th>
       </tr>
 </table>
+
 <script>
-    var x = document.getElementById('mytable')
+    var x = document.getElementById("myTable")
     
     for (var i =0; i <data.length; i++){
       var myNewRow = document.createElement('tr');
       var myNewCell1 = document.createElement('td');
       var myNewCell2 = document.createElement('td');
+      var myNewCell3 = document.createElement('td');
+      var myNewCell4 = document.createElement('td');
   
-      myNewCell1.innerHTML = data[i].BPL;
+      myNewCell1.innerHTML = data[i].State ;
       myNewCell2.innerHTML = data[i].YEAR;
+      myNewCell3.innerHTML = data[i].BPL;
+      myNewCell4.innerHTML = data[i].Total_Pop;
   
-      // myNewCell2.innerHTML = Math.round([i].generation_gwh_2019 *100)/100;
-      // myNewCell2.innerHTML = checkType(data[i].generation_gwh_2019);
+      myNewCell4.innerHTML = Math.round(data[i].Total_Pop);
+      // myNewCell2.innerHTML = checkType   (data[i].generation_gwh_2019);
       // myNewCell2.innerHTML = parseFloat(data[i].generation_gwh_2019).toFixed(2);
   
   
   
       // Assign color using if statements 
-      // if(data[i].generation_gwh_2019 > 39.7 ){ myNewCell2.style.backgroundColor = 'yellow'}
-      // if(data[i].generation_gwh_2019 <= 39.7 ){ myNewCell2.style.backgroundColor = 'grey'}
-      
+      if(data[i].BPL <= 200 ){ myNewRow.style.backgroundColor = '#7fc97f'} // US States/ North America
+      if(data[i].BPL > 200 && data[i].BPL <= 300){ myNewRow.style.backgroundColor = '#beaed4'}  // South American
+      if(data[i].BPL > 300 && data[i].BPL <= 499){ myNewRow.style.backgroundColor = '#fdc086'}  // Europe
+      if(data[i].BPL > 499 && data[i].BPL <= 599){ myNewRow.style.backgroundColor = '#ffff99'}  // Asia
+      if(data[i].BPL === 600 ){ myNewRow.style.backgroundColor = '#386cb0'}  // Africa
+      if(data[i].BPL >= 700 ){ myNewRow.style.backgroundColor = 'grey'}  // Other
+
       // Assign color using a function 
       // myNewCell2.style.backgroundColor = getBackgroundColor(data[i].generation_gwh_2019)
   
@@ -58,6 +82,8 @@ tr:nth-child(even) {
   
       myNewRow.append(myNewCell1);
       myNewRow.append(myNewCell2);
+      myNewRow.append(myNewCell3);
+      myNewRow.append(myNewCell4);
       x.append(myNewRow);
   
     } // The loop ends 
