@@ -26,12 +26,13 @@ state_birthplace_summary <- state_birthplace_summary %>%
   left_join(state_codes, by = c("STATEFIP" = "st")) %>%
   rename(State = stname)  # Rename 'stname' to 'State'
 
-# Define the list of states to keep
-selected_states <- c("Delaware", "District of Columbia", "Florida", "Georgia", 
-                     "Maryland", "North Carolina", "South Carolina", "Virginia", "West Virginia")
-
-# Filter dataset to only include these states
 filtered_data <- state_birthplace_summary %>%
-  filter(State %in% selected_states)
+  filter(BPL > 89) %>%  # Keep only BPL > 89 not born in US states
+  filter(BPL < 900) %>%  # Keep only BPL < 900 bad entries/unknown
+  group_by(State, YEAR) %>%  # Group by state and year
+  slice_max(order_by = BPL, n = 1, with_ties = FALSE) %>%  # Select the row with the highest BPL
+  ungroup() %>%  # Ungroup after selection
+  select(-stusps)  # Remove 'stusps' column
+
 
 write_csv(filtered_data, "filtered_state_birthplace_summary.csv")
