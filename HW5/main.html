@@ -26,14 +26,25 @@ crossorigin=""></script>
         margin-right: 8px;
         opacity: 0.9; 
         }
+    #slider {
+    width: 250px;
+    }
 
 </style>
 <body>
     <h1>Largest Immigrant Population By State Over Time</h1>
+    Author: Andrew Boettcher
     <h2 id="theYear">Year</h2>
-    <input type="range" name="year" value="1850" min="1850" max="2020" step="10" oninput="moveSlider(this.value)">
+    <input id="slider" type="range" name="year" value="1850" min="1850" max="2020" step="10" oninput="moveSlider(this.value)">
     <div id="map"></div>
     <div class="legend"></div>
     <script src="../HW5/elements.js"></script>
+
+    Note: Some years are missing data for a variety of reasons. These occurences are colored grey. <br> <br>
+
+    US Census Data was extracted from IPUMS for the period 1850-2020. Birthplace data was collected at the household level, 
+    then aggregated to the state level. Data was processed in R. I recoded birthplace country to continent. <br>
+    Data citation: Steven Ruggles, Sarah Flood, Matthew Sobek, Daniel Backman, Annie Chen, Grace Cooper, Stephanie Richards, Renae Rodgers, and 
+    Megan Schouweiler. IPUMS USA: Version 15.0 [dataset]. Minneapolis, MN: IPUMS, 2024. https://doi.org/10.18128/D010.V15.0
 </body>
 </html>
