@@ -10,8 +10,9 @@
     <input id="mySlider" type = "range" value="0" name = "Test" min = "0" max = "100" oninput="mySlider(value)">
 <script>
     function mySlider(value){
-        console.log("Hey! You moved me to value " + value)
+        // console.log("Hey! You moved me to value " + value)
         // make the h3 with id = myText show the value of the slider oninput
+        document.getElementById('myText').innerHTML = value
     }
 </script>
 </body>

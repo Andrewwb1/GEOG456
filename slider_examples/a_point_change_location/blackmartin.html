@@ -52,7 +52,7 @@
 
         function moveSlider(value) { // function called by the slider that uses the value to select one feature, using the index of the feature array. 
             //console.log(e.value)
-            map.removeLayer(geojson);// leaflet method to remove a layer
+            map.removeLayer(geojson);// leaflet method to remove a layer, you need this to only show current value 
             document.getElementById('daYear').innerHTML = 'Day ' + bm.features[value].properties.date
             geojson = L.geoJson(bm.features[value],{
                 pointToLayer: function(feature,latlng){
