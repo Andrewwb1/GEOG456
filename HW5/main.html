@@ -11,12 +11,29 @@ crossorigin=""/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
 integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
 crossorigin=""></script>
+<script src="../HW5/data.js"></script>
 <style>
     #map { height: 500px;  }
+    .legend {
+            line-height: 18px;
+            color: #000;
+            background-color: #ffffff;
+        }
+    .legend i {
+        width: 18px;
+        height: 18px;
+        float: left;
+        margin-right: 8px;
+        opacity: 0.9; 
+        }
+
 </style>
 <body>
     <h1>Largest Immigrant Population By State Over Time</h1>
+    <h2 id="theYear">Year</h2>
+    <input type="range" name="year" value="1850" min="1850" max="2020" step="10" oninput="moveSlider(this.value)">
     <div id="map"></div>
+    <div class="legend"></div>
     <script src="../HW5/elements.js"></script>
 </body>
 </html>
