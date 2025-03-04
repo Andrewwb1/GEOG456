@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""/>
+
+ <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+ integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+ crossorigin=""></script>
+</head>
+<style>
+    #container {
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+        }
+    #map { height: 350px;
+    width: 50% }
+    #info {
+        border: 1px solid black;
+        display: flex;
+        align-items: flex-end;
+        height: 350px;
+        width: 50%;
+    background-color: aqua;}
+
+    .column {
+            width: 10%;
+            display: flex;
+            align-items: center; 
+            justify-content: center; 
+            background-color: gray;
+            border: 1px solid black;
+        }
+</style>
+<script src="./data/NC20counties_pop_4326.js"></script>
+<body>
+    
+<div id="container">
+    <div id="map"></div>
+    <div id="info"></div>
+</div>
+    <script>
+       
+        var map = L.map('map', {attributionControl: false }).setView([35.94243575255426, -78.55224609375001 ], 8);        
+        var OpenStreetMap_Mapnik = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        opacity: .5,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+            
+        function style(feature) {
+            return {
+                    fillColor: 'pink',
+                    weight: 2,
+                    opacity: 1,
+                    color: 'white',
+                    fillOpacity: 0.7
+                };
+            }
+
+function onEachFeature(feature, layer) {
+    layer.on({mouseover: addInformation})
+}
+
+var myInfo = document.getElementById('info')
+
+
+function myFeature2nArrayOfObj(aFeature){ 
+    var white = {name: 'White', value: aFeature.properties.White}
+    var black = {name: 'Black', value: aFeature.properties.Blc_A_A}
+    var americanIndian = {name: 'American Indian', value: aFeature.properties.Amr_Ind}
+    var asian = {name: 'Asian', value: aFeature.properties.Asian}
+    var pacific =  {name: 'Hawaii & Pacific Islands', value: aFeature.properties.Haw_Pcf}
+    var other =  {name: 'Other', value: aFeature.properties.other}
+    var twoOrMore = {name: 'Two or more', value: aFeature.properties.tw_r_mr}
+    var myArray = [white,black,americanIndian,asian,pacific,other,twoOrMore]  
+    return myArray
+}
+
+
+var myGeojson = L.geoJson(nc, {
+    style: style,
+    onEachFeature: onEachFeature
+}).addTo(map);
+
+
+
+
+function selectColorByValue(value){
+            if (value > 5000) {return 'pink'}
+            if (value >0 ) {return 'yellow'}
+        }
+
+
+
+        function addColumn(obj){
+            
+            var columnDiv = document.createElement("div");
+            columnDiv.className = "column";
+            columnDiv.style.backgroundColor = selectColorByValue(obj.value);
+            columnDiv.style.height = (obj.value/200) + 'px' //`${value}px`;
+            columnDiv.innerHTML = obj.name + ' <br/>' + obj.value 
+            myInfo.append(columnDiv);
+        }
+
+function addInformation(e) {
+    myInfo.innerHTML = '';
+    var myNewArray = myFeature2nArrayOfObj(e.target.feature)
+   myNewArray.forEach(e =>addColumn(e)) 
+
+}
+
+    </script>
+</body>
+</html>

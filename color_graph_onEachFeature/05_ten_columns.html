@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Column Divs</title>
+    <style>
+        /* this has the css for the container div */
+        #container {
+            width: 400px;
+            height: 100px;
+            border: 1px solid black;
+            display: flex;
+            align-items: flex-end;
+        }
+        /* this has the css for the columns */
+        .column {
+            width: 10%;
+            display: flex;
+            align-items: center; 
+            justify-content: center; 
+            background-color: gray;
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <div id="container"></div>
+
+    <script>
+        // an array of objects
+        var objectsArray = [
+            { value: 10, color: "red", class: "a" },
+            { value: 20, color: "blue", class: "b" },
+            { value: 30, color: "#FFDB58", class: "a" },
+            { value: 40, color: "#33CC33", class: "b" },
+            { value: 50, color: "#FF4500", class: "a" },
+            { value: 60, color: "#FFFF00", class: "b" },
+            { value: 70, color: "#FF6347", class: "a" },
+            { value: 80, color: "#800080", class: "b" },
+            { value: 90, color: "#FFD700", class: "a" },
+            { value: 100, color: "#4B0082", class: "b" }
+        ];
+
+        
+        // these lines get the element whose id is container from the documents, and declares it as a variable named container 
+
+        var container = document.getElementById("container");
+
+
+        function selectColorByValue(value){
+            return value < 50 ? 'pink' : 'yellow'
+        }
+
+
+        function addColumn(value){
+            var columnDiv = document.createElement("div");
+            columnDiv.className = "column";
+            columnDiv.style.backgroundColor = selectColorByValue(value);
+            columnDiv.style.height = value + 'px' //`${value}px`;
+            columnDiv.innerText = value
+            container.append(columnDiv);
+        }
+    
+        objectsArray.forEach(e => addColumn(e.value, e.class));
+    </script>
+</body>
+</html>
