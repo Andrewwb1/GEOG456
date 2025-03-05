@@ -13,24 +13,12 @@
     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
     crossorigin=""></script>
 </head>
-<script src="../HW5/data.js"></script>
 <style>
-    .legend {
-            line-height: 18px;
-            color: #000;
-            background-color: #ffffff;
-        }
-    .legend i {
-        width: 18px;
-        height: 18px;
-        float: left;
-        margin-right: 8px;
-        opacity: 0.9; 
-        }
+
     #container {
             display: flex;
             width: 100vw;
-            height: 100vh;
+            height: 50vh;
         }
     #map { height: 350px;
     width: 50% }
@@ -41,7 +29,7 @@
         height: 350px;
         width: 50%;}
     .column {
-            width: 10%;
+            width: 20%;
             display: flex;
             align-items: center; 
             justify-content: center; 
@@ -51,15 +39,75 @@
 </style>
 <body>
     <h1>Largest Immigrant Population By State Over Time</h1>
-    Author: Andrew Boettcher
+    Author: Andrew Boettcher <br><br>
+
+    Hover over different states to see where the largest immigrant groups were coming from over time. For each Census year, the 
+    largest continent of origin is noted. The graph on the right then presents the number of times each continent was the largest country of origin response for each state.
+    Example: If Europe has a value of 10, then for 10 different Census Years Immigrants born in Europe were the largest immigrant population. <br><br>
+
         
 <div id="container">
     <div id="map"></div>
     <div id="info"></div>
-    <div class="legend"></div>
 </div>
-    <script src="../A4/elements.js"></script>
+<script src="../HW5/data.js"></script>
+    <script>
+    var map = L.map('map').setView([39.828175, -98.5795], 4);
 
+var OSM = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+}).addTo(map);
+
+
+function style(feature) {
+    return {
+            fillColor: 'pink',
+            weight: 2,
+            opacity: 1,
+            color: 'white',
+            fillOpacity: 0.7
+        };
+    }
+
+function onEachFeature(feature, layer) {
+        layer.on({mouseover: addInformation})
+    }
+var myInfo = document.getElementById('info')
+
+
+function myFeature2nArrayOfObj(aFeature){ 
+    var north = {name: 'North America', value: aFeature.properties["1_count"]}
+    var south = {name: 'South America', value: aFeature.properties["2_count"]}
+    var euro = {name: 'Europe', value: aFeature.properties["3_count"]}
+    var asia = {name: 'Asia', value: aFeature.properties["4_count"]}
+    var africa =  {name: 'Africa', value: aFeature.properties["5_count"]}
+    var myArray = [north,south,euro,asia,africa]  
+    return myArray
+}
+
+
+var myGeojson = L.geoJson(data, {
+    style: style,
+    onEachFeature: onEachFeature
+}).addTo(map);
+
+function addColumn(obj){
+            
+    var columnDiv = document.createElement("div");
+    columnDiv.className = "column";
+    columnDiv.style.height = (obj.value*10) + 'px' //`${value}px`;
+    columnDiv.innerHTML = obj.name + ' <br/>' + obj.value 
+    myInfo.append(columnDiv);
+        }
+
+function addInformation(e) {
+    myInfo.innerHTML = '';
+    var myNewArray = myFeature2nArrayOfObj(e.target.feature)
+   myNewArray.forEach(e =>addColumn(e)) 
+
+}     
+    </script>
     US Census Data was extracted from IPUMS for the period 1850-2020. Birthplace data was collected at the household level, 
     then aggregated to the state level. Data was processed in R. I recoded birthplace country to continent. <br>
     Data citation: Steven Ruggles, Sarah Flood, Matthew Sobek, Daniel Backman, Annie Chen, Grace Cooper, Stephanie Richards, Renae Rodgers, and 

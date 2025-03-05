@@ -24,14 +24,12 @@ var myInfo = document.getElementById('info')
 
 
 function myFeature2nArrayOfObj(aFeature){ 
-    var white = {name: 'White', value: aFeature.properties.White}
-    var black = {name: 'Black', value: aFeature.properties.Blc_A_A}
-    var americanIndian = {name: 'American Indian', value: aFeature.properties.Amr_Ind}
-    var asian = {name: 'Asian', value: aFeature.properties.Asian}
-    var pacific =  {name: 'Hawaii & Pacific Islands', value: aFeature.properties.Haw_Pcf}
-    var other =  {name: 'Other', value: aFeature.properties.other}
-    var twoOrMore = {name: 'Two or more', value: aFeature.properties.tw_r_mr}
-    var myArray = [white,black,americanIndian,asian,pacific,other,twoOrMore]  
+    var north = {name: 'North America', value: aFeature.properties.count_1}
+    var south = {name: 'South America', value: aFeature.properties.count_2}
+    var euro = {name: 'Europe', value: aFeature.properties.count_3}
+    var asia = {name: 'Asia', value: aFeature.properties.count_4}
+    var africa =  {name: 'Africa', value: aFeature.properties.count_5}
+    var myArray = [north,south,euro,asia,africa]  
     return myArray
 }
 
@@ -41,24 +39,13 @@ var myGeojson = L.geoJson(data, {
     onEachFeature: onEachFeature
 }).addTo(map);
 
-
-
-
-function selectColorByValue(value){
-            if (value > 5000) {return 'pink'}
-            if (value >0 ) {return 'yellow'}
-        }
-
-
-
-        function addColumn(obj){
+function addColumn(obj){
             
-            var columnDiv = document.createElement("div");
-            columnDiv.className = "column";
-            columnDiv.style.backgroundColor = selectColorByValue(obj.value);
-            columnDiv.style.height = (obj.value/200) + 'px' //`${value}px`;
-            columnDiv.innerHTML = obj.name + ' <br/>' + obj.value 
-            myInfo.append(columnDiv);
+    var columnDiv = document.createElement("div");
+    columnDiv.className = "column";
+    columnDiv.style.height = (obj.value/200) + 'px' //`${value}px`;
+    columnDiv.innerHTML = obj.name + ' <br/>' + obj.value 
+    myInfo.append(columnDiv);
         }
 
 function addInformation(e) {
