@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assessment 4</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""/>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""></script>
+</head>
+<script src="../HW5/data.js"></script>
+<style>
+    .legend {
+            line-height: 18px;
+            color: #000;
+            background-color: #ffffff;
+        }
+    .legend i {
+        width: 18px;
+        height: 18px;
+        float: left;
+        margin-right: 8px;
+        opacity: 0.9; 
+        }
+    #container {
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+        }
+    #map { height: 350px;
+    width: 50% }
+    #info {
+        border: 1px solid black;
+        display: flex;
+        align-items: flex-end;
+        height: 350px;
+        width: 50%;}
+    .column {
+            width: 10%;
+            display: flex;
+            align-items: center; 
+            justify-content: center; 
+            background-color: gray;
+            border: 1px solid black;
+        }
+</style>
+<body>
+    <h1>Largest Immigrant Population By State Over Time</h1>
+    Author: Andrew Boettcher
+        
+<div id="container">
+    <div id="map"></div>
+    <div id="info"></div>
+    <div class="legend"></div>
+</div>
+    <script src="../A4/elements.js"></script>
+
+    US Census Data was extracted from IPUMS for the period 1850-2020. Birthplace data was collected at the household level, 
+    then aggregated to the state level. Data was processed in R. I recoded birthplace country to continent. <br>
+    Data citation: Steven Ruggles, Sarah Flood, Matthew Sobek, Daniel Backman, Annie Chen, Grace Cooper, Stephanie Richards, Renae Rodgers, and 
+    Megan Schouweiler. IPUMS USA: Version 15.0 [dataset]. Minneapolis, MN: IPUMS, 2024. https://doi.org/10.18128/D010.V15.0
+</body>
+</html>
