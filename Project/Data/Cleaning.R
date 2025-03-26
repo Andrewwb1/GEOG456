@@ -143,16 +143,30 @@ recoded_data <- state_birthplace_summary %>%
 final_summary <- recoded_data %>%
   group_by(State, YEAR, country) %>%
   summarize(Population = sum(Total_Pop, na.rm = TRUE), .groups = "drop") %>%
-  arrange(State, YEAR, desc(Population))
+  arrange(State, YEAR, desc(Population)) 
 
-# --- 5. Nest the data so that each row is a state with all its associated data ---
+# --- 5. Calculate native-born percentage per state per year ---
+native_totals <- final_summary %>%
+  group_by(State, YEAR) %>%
+  summarize(
+    Native_Pop = sum(Population[country == "Native Born"], na.rm = TRUE),
+    Total_Pop = sum(Population, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  mutate(nativePct = ifelse(Total_Pop > 0, round((Native_Pop / Total_Pop) * 100, 2), 0))
+
+# --- 6. Merge nativePct back into final dataset ---
+final_summary <- final_summary %>%
+  left_join(native_totals %>% select(State, YEAR, nativePct), by = c("State", "YEAR"))
+
+# --- 7. Nest the data so that each row is a state with all its associated data ---
 state_data_nested <- final_summary %>%
   group_by(State) %>%
-  nest(data = c(YEAR, country, Population))
+  nest(data = c(YEAR, country, Population, nativePct))
 
-# --- 6. Convert the nested data frame to JSON ---
+# --- 8. Convert the nested data frame to JSON ---
 json_output <- toJSON(state_data_nested, pretty = TRUE)
 
 # write the JSON to a file
-write(json_output, file = "state_birthplace_nested.json")
+write(json_output, file = "GEOG456-Workspace/Project/Data/state_birthplace_nested.json")
 

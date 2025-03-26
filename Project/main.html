@@ -3,9 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Tracking US State-level Immigrant Populations Over Time</title>
 </head>
+<style>
+    #container {
+        display: flex;
+        width: 100vw;
+        height: 500px;}
+    #map { 
+        border: 1px solid black;
+        display: flex;
+        align-items: flex-end;
+        height: 450px;
+        width: 50%;}
+    #info {
+        border: 1px solid black;
+        display: flex;
+        align-items: flex-end;
+        height: 450px;
+        width: 50%;}
+    .column {
+        width: 20%;
+        display: flex;
+        align-items: center; 
+        justify-content: center; 
+        background-color: gray;
+        border: 1px solid black;}
+</style>
 <body>
+    <h1>Tracking US State-level Immigrant Populations Over Time</h1>
+    Author: Andrew Boettcher <br><br>
 
+    <div id="container">
+        <div id="map"></div>
+        <div id="info"></div>
+    </div>
+    <script src="Data/data.js"></script>
+
+
+    US Census Data was extracted from IPUMS for the period 1850-2020. Birthplace data was collected at the household level, 
+    then aggregated to the state level. Data was processed in R and transformed into a nest JSON. <br>
+    Data citation: Steven Ruggles, Sarah Flood, Matthew Sobek, Daniel Backman, Annie Chen, Grace Cooper, Stephanie Richards, Renae Rodgers, and 
+    Megan Schouweiler. IPUMS USA: Version 15.0 [dataset]. Minneapolis, MN: IPUMS, 2024. https://doi.org/10.18128/D010.V15.0
 </body>
 </html>
