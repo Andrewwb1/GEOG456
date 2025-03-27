@@ -6,43 +6,104 @@
     <title>Tracking US State-level Immigrant Populations Over Time</title>
 </head>
 <style>
-    #container {
-        display: flex;
-        width: 100vw;
-        height: 500px;}
-    #map { 
-        border: 1px solid black;
-        display: flex;
-        align-items: flex-end;
-        height: 450px;
-        width: 50%;}
-    #info {
-        border: 1px solid black;
-        display: flex;
-        align-items: flex-end;
-        height: 450px;
-        width: 50%;}
-    .column {
-        width: 20%;
-        display: flex;
-        align-items: center; 
-        justify-content: center; 
-        background-color: gray;
-        border: 1px solid black;}
+
+    .map-container {
+      display: grid;
+      grid-template-columns: repeat(12, 80px);
+      grid-auto-rows: 80px;
+      gap: 5px;
+      justify-content: center;
+      margin: 30px auto;
+      width: max-content; 
+    }
+
+    .state-tile {
+      background-color: #ddd;
+      border: 1px solid #aaa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .state-tile:hover {
+      background-color: #bbb;
+    }
 </style>
 <body>
     <h1>Tracking US State-level Immigrant Populations Over Time</h1>
     Author: Andrew Boettcher <br><br>
 
-    <div id="container">
-        <div id="map"></div>
-        <div id="info"></div>
-    </div>
+
     <script src="Data/data.js"></script>
 
+    <div class="map-container">
+        <!-- Row 1 -->
+        <div class="state-tile" style="grid-column: 1; grid-row: 1;">AK</div>
+        <div class="state-tile" style="grid-column: 12; grid-row: 1;">ME</div>
+        <!-- Row 2 -->
+        <div class="state-tile" style="grid-column: 11; grid-row: 2;">VT</div>
+        <div class="state-tile" style="grid-column: 12; grid-row: 2;">NH</div>
+        <!-- Row 3 -->
+        <div class="state-tile" style="grid-column: 2; grid-row: 3;">WA</div>
+        <div class="state-tile" style="grid-column: 3; grid-row: 3;">ID</div>
+        <div class="state-tile" style="grid-column: 4; grid-row: 3;">MT</div>
+        <div class="state-tile" style="grid-column: 5; grid-row: 3;">ND</div>
+        <div class="state-tile" style="grid-column: 6; grid-row: 3;">MN</div>
+        <div class="state-tile" style="grid-column: 7; grid-row: 3;">IL</div>
+        <div class="state-tile" style="grid-column: 8; grid-row: 3;">WI</div>
+        <div class="state-tile" style="grid-column: 9; grid-row: 3;">MI</div>
+        <div class="state-tile" style="grid-column: 10; grid-row: 3;">NY</div>
+        <div class="state-tile" style="grid-column: 11; grid-row: 3;">RI</div>
+        <div class="state-tile" style="grid-column: 12; grid-row: 3;">MA</div>
+        <!-- Row 4 -->
+        <div class="state-tile" style="grid-column: 2; grid-row: 4;">OR</div>
+        <div class="state-tile" style="grid-column: 3; grid-row: 4;">NV</div>
+        <div class="state-tile" style="grid-column: 4; grid-row: 4;">WY</div>
+        <div class="state-tile" style="grid-column: 5; grid-row: 4;">SD</div>
+        <div class="state-tile" style="grid-column: 6; grid-row: 4;">IA</div>
+        <div class="state-tile" style="grid-column: 7; grid-row: 4;">IN</div>
+        <div class="state-tile" style="grid-column: 8; grid-row: 4;">OH</div>
+        <div class="state-tile" style="grid-column: 9; grid-row: 4;">PA</div>
+        <div class="state-tile" style="grid-column: 10; grid-row: 4;">NJ</div>
+        <div class="state-tile" style="grid-column: 11; grid-row: 4;">CT</div>
+        <!-- Row 5 -->
+        <div class="state-tile" style="grid-column: 2; grid-row: 5;">CA</div>
+        <div class="state-tile" style="grid-column: 3; grid-row: 5;">UT</div>
+        <div class="state-tile" style="grid-column: 4; grid-row: 5;">CO</div>
+        <div class="state-tile" style="grid-column: 5; grid-row: 5;">NE</div>
+        <div class="state-tile" style="grid-column: 6; grid-row: 5;">MO</div>
+        <div class="state-tile" style="grid-column: 7; grid-row: 5;">KY</div>
+        <div class="state-tile" style="grid-column: 8; grid-row: 5;">WV</div>
+        <div class="state-tile" style="grid-column: 9; grid-row: 5;">VA</div>
+        <div class="state-tile" style="grid-column: 10; grid-row: 5;">MD</div>
+        <div class="state-tile" style="grid-column: 11; grid-row: 5;">DE</div>
+        <!-- Row 6 -->
+        <div class="state-tile" style="grid-column: 3; grid-row: 6;">AZ</div>
+        <div class="state-tile" style="grid-column: 4; grid-row: 6;">NM</div>
+        <div class="state-tile" style="grid-column: 5; grid-row: 6;">KS</div>
+        <div class="state-tile" style="grid-column: 6; grid-row: 6;">AR</div>
+        <div class="state-tile" style="grid-column: 7; grid-row: 6;">TN</div>
+        <div class="state-tile" style="grid-column: 8; grid-row: 6;">NC</div>
+        <div class="state-tile" style="grid-column: 9; grid-row: 6;">SC</div>
+        <div class="state-tile" style="grid-column: 10; grid-row: 6;">DC</div>
+        <!-- Row 7 -->
+        <div class="state-tile" style="grid-column: 5; grid-row: 7;">OK</div>
+        <div class="state-tile" style="grid-column: 6; grid-row: 7;">LA</div>
+        <div class="state-tile" style="grid-column: 7; grid-row: 7;">MS</div>
+        <div class="state-tile" style="grid-column: 8; grid-row: 7;">AL</div>
+        <div class="state-tile" style="grid-column: 9; grid-row: 7;">GA</div>
+        <!-- Row 8 -->
+        <div class="state-tile" style="grid-column: 1; grid-row: 8;">HI</div>
+        <div class="state-tile" style="grid-column: 5; grid-row: 8;">TX</div>
+        <div class="state-tile" style="grid-column: 10; grid-row: 8;">FL</div>
+
+
+      </div>
 
     US Census Data was extracted from IPUMS for the period 1850-2020. Birthplace data was collected at the household level, 
-    then aggregated to the state level. Data was processed in R and transformed into a nest JSON. <br>
+    then aggregated to the state level. Data was processed in R and transformed into a nest JSON. <br><br>
     Data citation: Steven Ruggles, Sarah Flood, Matthew Sobek, Daniel Backman, Annie Chen, Grace Cooper, Stephanie Richards, Renae Rodgers, and 
     Megan Schouweiler. IPUMS USA: Version 15.0 [dataset]. Minneapolis, MN: IPUMS, 2024. https://doi.org/10.18128/D010.V15.0
 </body>
