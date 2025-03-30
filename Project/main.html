@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tracking US State-level Immigrant Populations Over Time</title>
+
 </head>
 <style>
 
@@ -18,17 +19,25 @@
     }
 
     .state-tile {
-      background-color: #ddd;
+      width: 80px;
+      height: 80px;
+      background: #ddd;
       border: 1px solid #aaa;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       font-weight: bold;
-      font-size: 14px;
       cursor: pointer;
+      position: relative;
     }
+
     .state-tile:hover {
       background-color: #bbb;
+    }
+    svg {
+      width: 80px;
+      height: 80px;
     }
 </style>
 <body>
@@ -101,10 +110,245 @@
 
 
       </div>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script>
+ document.addEventListener("DOMContentLoaded", function() {
+  // Function to create chart for a specific state
+  function createStateChart(stateAbbr, stateTile) {
+    // Find full state name for the abbreviation
+    var stateName = getStateNameFromAbbr(stateAbbr);
+    
+    if (!stateName) {
+      console.error("No state name found for abbreviation: " + stateAbbr);
+      return;
+    }
+    
+    // Find state data
+    var stateRecord = data.find(function(d) {
+      return d.State === stateName;
+    });
+    
+    if (!stateRecord) {
+      console.error("No data for state: " + stateName);
+      return;
+    }
+    
+    // Create a new SVG element for this state (regardless of whether one existed before)
+    var svgId = "chart" + stateAbbr;
+    
+    // Clear the tile content
+    stateTile.innerHTML = '';
+    
+    // Create the SVG element
+    var svgElem = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svgElem.id = svgId;
+    svgElem.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+    stateTile.appendChild(svgElem);
+    
+    // Process data to get unique years
+    var uniqueData = [];
+    var seenYears = {};
+    stateRecord.data.forEach(function(entry) {
+      var year = +entry.YEAR;
+      if (!seenYears[year]) {
+        seenYears[year] = true;
+        uniqueData.push({ YEAR: year, nativePct: +entry.nativePct });
+      }
+    });
+    
+    uniqueData.sort(function(a, b) { return a.YEAR - b.YEAR; });
+    
+    // Set explicit dimensions to match the parent div
+    svgElem.setAttribute("width", "80");
+    svgElem.setAttribute("height", "80");
+    
+    var svgWidth = 80, svgHeight = 80;
+    var margin = { top: 5, right: 5, bottom: 5, left: 5 };
+    var innerWidth = svgWidth - margin.left - margin.right;
+    var innerHeight = svgHeight - margin.top - margin.bottom;
+    
+    // Calculate scales
+    var minYear = uniqueData[0].YEAR;
+    var maxYear = uniqueData[uniqueData.length - 1].YEAR;
+    var yearRange = maxYear - minYear;
+    var scaleX = innerWidth / yearRange;
+    var scaleY = innerHeight / 100;  // Scale for percentage values (0-100)
+    
+    var svgns = "http://www.w3.org/2000/svg";
+    
+    // Add background rect to ensure full coverage
+    var background = document.createElementNS(svgns, "rect");
+    background.setAttribute("x", "0");
+    background.setAttribute("y", "0");
+    background.setAttribute("width", svgWidth);
+    background.setAttribute("height", svgHeight);
+    background.setAttribute("fill", "#f5f5f5"); // Light gray background
+    svgElem.appendChild(background);
+    
+    // Create a clipping path for chart content
+    var clipId = "chart-clip-" + stateAbbr.toLowerCase();
+    var clipPath = document.createElementNS(svgns, "clipPath");
+    clipPath.setAttribute("id", clipId);
+    var clipRect = document.createElementNS(svgns, "rect");
+    clipRect.setAttribute("x", margin.left);
+    clipRect.setAttribute("y", margin.top);
+    clipRect.setAttribute("width", innerWidth);
+    clipRect.setAttribute("height", innerHeight);
+    clipPath.appendChild(clipRect);
+    svgElem.appendChild(clipPath);
+    
+    // Create a group for the chart elements with clipping
+    var chartGroup = document.createElementNS(svgns, "g");
+    chartGroup.setAttribute("clip-path", "url(#" + clipId + ")");
+    svgElem.appendChild(chartGroup);
+    
+    // BOLDER COLORS
+    var nativeColor = "rgba(0, 0, 255, 0.7)";    // Stronger blue
+    var foreignColor = "rgba(255, 0, 0, 0.7)";   // Stronger red
+    
+    // Draw fill areas for native and foreign percentages
+    for (var i = 0; i < uniqueData.length - 1; i++) {
+      var d0 = uniqueData[i];
+      var d1 = uniqueData[i+1];
+      var x0 = margin.left + (d0.YEAR - minYear) * scaleX;
+      var x1 = margin.left + (d1.YEAR - minYear) * scaleX;
+      
+      // Calculate y-values for the transition between native and foreign born
+      var y0 = margin.top + (100 - d0.nativePct) * scaleY;
+      var y1 = margin.top + (100 - d1.nativePct) * scaleY;
+      
+      // Fill for native-born (blue, top section)
+      var nativePoints = `${x0},${margin.top} ${x1},${margin.top} ${x1},${y1} ${x0},${y0}`;
+      var nativePoly = document.createElementNS(svgns, "polygon");
+      nativePoly.setAttribute("points", nativePoints);
+      nativePoly.setAttribute("fill", nativeColor);
+      chartGroup.appendChild(nativePoly);
+      
+      // Fill for foreign-born (red, bottom section)
+      var foreignPoints = `${x0},${y0} ${x1},${y1} ${x1},${margin.top+innerHeight} ${x0},${margin.top+innerHeight}`;
+      var foreignPoly = document.createElementNS(svgns, "polygon");
+      foreignPoly.setAttribute("points", foreignPoints);
+      foreignPoly.setAttribute("fill", foreignColor);
+      chartGroup.appendChild(foreignPoly);
+    }
+    
+    // Add a border to the chart area
+    var borderRect = document.createElementNS(svgns, "rect");
+    borderRect.setAttribute("x", margin.left);
+    borderRect.setAttribute("y", margin.top);
+    borderRect.setAttribute("width", innerWidth);
+    borderRect.setAttribute("height", innerHeight);
+    borderRect.setAttribute("fill", "none");
+    borderRect.setAttribute("stroke", "#333");
+    borderRect.setAttribute("stroke-width", "0.5");
+    svgElem.appendChild(borderRect);
+    
+    // Draw the data line showing the transition between native and foreign born
+    var pathData = "";
+    uniqueData.forEach(function(d, i) {
+      var x = margin.left + (d.YEAR - minYear) * scaleX;
+      var y = margin.top + (100 - d.nativePct) * scaleY;
+      if (i === 0) {
+        pathData += "M " + x + " " + y;
+      } else {
+        pathData += " L " + x + " " + y;
+      }
+    });
+    
+    var pathElem = document.createElementNS(svgns, "path");
+    pathElem.setAttribute("d", pathData);
+    pathElem.setAttribute("fill", "none");
+    pathElem.setAttribute("stroke", "black");
+    pathElem.setAttribute("stroke-width", "2"); // Thicker line
+    chartGroup.appendChild(pathElem);
+    
+    // Add state initials to the bottom right corner
+    var stateText = document.createElementNS(svgns, "text");
+    stateText.setAttribute("x", svgWidth - 8); // Positioned in bottom right, with 8px padding
+    stateText.setAttribute("y", svgHeight - 8); // Positioned in bottom right, with 5px padding
+    stateText.setAttribute("text-anchor", "end"); // Right-align text
+    stateText.setAttribute("font-size", "12px"); // Appropriate font size
+    stateText.setAttribute("font-weight", "bold"); // Make it bold
+    stateText.setAttribute("fill", "rgba(0, 0, 0, 0.6)"); // Black with 60% opacity (slightly transparent)
+    stateText.textContent = stateAbbr;
+    svgElem.appendChild(stateText);
+  }
+  
+  // Helper function to get full state name from abbreviation
+  function getStateNameFromAbbr(abbr) {
+    var stateMap = {
+      'AL': 'Alabama',
+      'AK': 'Alaska',
+      'AZ': 'Arizona',
+      'AR': 'Arkansas',
+      'CA': 'California',
+      'CO': 'Colorado',
+      'CT': 'Connecticut',
+      'DE': 'Delaware',
+      'DC': 'District of Columbia',
+      'FL': 'Florida',
+      'GA': 'Georgia',
+      'HI': 'Hawaii',
+      'ID': 'Idaho',
+      'IL': 'Illinois',
+      'IN': 'Indiana',
+      'IA': 'Iowa',
+      'KS': 'Kansas',
+      'KY': 'Kentucky',
+      'LA': 'Louisiana',
+      'ME': 'Maine',
+      'MD': 'Maryland',
+      'MA': 'Massachusetts',
+      'MI': 'Michigan',
+      'MN': 'Minnesota',
+      'MS': 'Mississippi',
+      'MO': 'Missouri',
+      'MT': 'Montana',
+      'NE': 'Nebraska',
+      'NV': 'Nevada',
+      'NH': 'New Hampshire',
+      'NJ': 'New Jersey',
+      'NM': 'New Mexico',
+      'NY': 'New York',
+      'NC': 'North Carolina',
+      'ND': 'North Dakota',
+      'OH': 'Ohio',
+      'OK': 'Oklahoma',
+      'OR': 'Oregon',
+      'PA': 'Pennsylvania',
+      'RI': 'Rhode Island',
+      'SC': 'South Carolina',
+      'SD': 'South Dakota',
+      'TN': 'Tennessee',
+      'TX': 'Texas',
+      'UT': 'Utah',
+      'VT': 'Vermont',
+      'VA': 'Virginia',
+      'WA': 'Washington',
+      'WV': 'West Virginia',
+      'WI': 'Wisconsin',
+      'WY': 'Wyoming'
+    };
+    return stateMap[abbr];
+  }
+  
+  // Process all state tiles
+  var stateTiles = document.querySelectorAll('.state-tile');
+  stateTiles.forEach(function(tile) {
+    // Extract the state abbreviation from the tile
+    var text = tile.textContent.trim();
+    if (text.length === 2) {  // Assuming all state abbreviations are 2 characters
+      // Create chart for this state (passing the tile element)
+      createStateChart(text, tile);
+    }
+  });
+});
+    </script>
 
     US Census Data was extracted from IPUMS for the period 1850-2020. Birthplace data was collected at the household level, 
     then aggregated to the state level. Data was processed in R and transformed into a nest JSON. <br><br>
     Data citation: Steven Ruggles, Sarah Flood, Matthew Sobek, Daniel Backman, Annie Chen, Grace Cooper, Stephanie Richards, Renae Rodgers, and 
     Megan Schouweiler. IPUMS USA: Version 15.0 [dataset]. Minneapolis, MN: IPUMS, 2024. https://doi.org/10.18128/D010.V15.0
 </body>
+
 </html>
