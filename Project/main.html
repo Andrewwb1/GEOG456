@@ -146,6 +146,7 @@
     stateTile.appendChild(svgElem);
     
     // Process data to get unique years
+    // I've got multiple entries for each year so I only want to count each one once
     var uniqueData = [];
     var seenYears = {};
     stateRecord.data.forEach(function(entry) {
@@ -159,16 +160,17 @@
     uniqueData.sort(function(a, b) { return a.YEAR - b.YEAR; });
     
     // Set explicit dimensions to match the parent div
+    // Was really struggeling to get the SVG to take up the entire div
     svgElem.setAttribute("width", "80");
     svgElem.setAttribute("height", "80");
     
     var svgWidth = 80, svgHeight = 80;
-    var margin = { top: 5, right: 5, bottom: 5, left: 5 };
+    var margin = { top: 5, right: 5, bottom: 5, left: 5 }; // otherwise there is no gaps and it's a little hard to interpret
     var innerWidth = svgWidth - margin.left - margin.right;
     var innerHeight = svgHeight - margin.top - margin.bottom;
     
     // Calculate scales
-    var minYear = uniqueData[0].YEAR;
+    var minYear = uniqueData[0].YEAR; // these should be the same for every state, but still in the function to process every state
     var maxYear = uniqueData[uniqueData.length - 1].YEAR;
     var yearRange = maxYear - minYear;
     var scaleX = innerWidth / yearRange;
@@ -176,7 +178,7 @@
     
     var svgns = "http://www.w3.org/2000/svg";
     
-    // Add background rect to ensure full coverage
+    // the little bcoxes around every svg 
     var background = document.createElementNS(svgns, "rect");
     background.setAttribute("x", "0");
     background.setAttribute("y", "0");
@@ -186,6 +188,7 @@
     svgElem.appendChild(background);
     
     // Create a clipping path for chart content
+    // Prevents "spillage"
     var clipId = "chart-clip-" + stateAbbr.toLowerCase();
     var clipPath = document.createElementNS(svgns, "clipPath");
     clipPath.setAttribute("id", clipId);
@@ -207,17 +210,18 @@
     var foreignColor = "rgba(255, 0, 0, 0.7)";   // Stronger red
     
     // Draw fill areas for native and foreign percentages
+    // the actual fillings of the svg
     for (var i = 0; i < uniqueData.length - 1; i++) {
       var d0 = uniqueData[i];
       var d1 = uniqueData[i+1];
       var x0 = margin.left + (d0.YEAR - minYear) * scaleX;
       var x1 = margin.left + (d1.YEAR - minYear) * scaleX;
       
-      // Calculate y-values for the transition between native and foreign born
+      // the line in between 
       var y0 = margin.top + (100 - d0.nativePct) * scaleY;
       var y1 = margin.top + (100 - d1.nativePct) * scaleY;
       
-      // Fill for native-born (blue, top section)
+      // foreign born is in blue on the top 
       var nativePoints = `${x0},${margin.top} ${x1},${margin.top} ${x1},${y1} ${x0},${y0}`;
       var nativePoly = document.createElementNS(svgns, "polygon");
       nativePoly.setAttribute("points", nativePoints);
