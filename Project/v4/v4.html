@@ -6,92 +6,90 @@
     <title>Tracking US State-level Immigrant Populations Over Time</title>
 </head>
 <style>
-    .map-container {
-      display: grid;
-      grid-template-columns: repeat(12, 80px);
-      grid-auto-rows: 80px;
-      gap: 5px;
-      justify-content: center;
-      margin: 30px auto;
-      width: max-content; 
-    }
+  .map-container {
+    display: grid;
+    grid-template-columns: repeat(12, 80px);
+    grid-auto-rows: 80px;
+    gap: 5px;
+    justify-content: center;
+    margin: 30px auto;
+    width: max-content; 
+  }
 
-    .state-tile {
-      width: 80px;
-      height: 80px;
-      background: #ddd;
-      border: 1px solid #aaa;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      cursor: pointer;
-      position: relative;
-    }
+  .state-tile {
+    width: 80px;
+    height: 80px;
+    background: #ddd;
+    border: 1px solid #aaa;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    cursor: pointer;
+    position: relative;
+  }
 
-    .state-tile:hover {
-      background-color: #bbb;
-    }
-    svg {
-      width: 80px;
-      height: 80px;
-    }
-    /* for interactivity second box */
-    .detail-box {
-      width: 400px;
-      height: 500px;
-      border: 1px solid #888;
-      margin-left: 20px;
-      padding: 15px;
-      float: left;
-      background-color: white;
-      overflow: visible;
-    }
+  .state-tile:hover {
+    background-color: #bbb;
+  }
 
-    .detail-header {
-      font-size: 20px;
-      font-weight: bold;
-      margin-bottom: 15px;
-      text-align: center;
-    }
-    
-    .slider-container {
-      width: 380px;
-      margin: 20px auto;
-    }
-    
-    #year-slider {
-      width: 100%;
-    }
-    
-    #year-label {
-      text-align: center;
-      font-size: 18px;
-      margin: 10px 0;
-    }
-    
-    .pie-chart-container {
-      width: 350px;
-      height: 400px;
-      margin: 0 auto;
-      overflow: visible;
-    }
-    
-    .main-container {
-      display: flex;
-      justify-content: center;
-    }
-    
-    /* Pie chart colors */
-    .slice {
-      stroke: #fff;
-      stroke-width: 1px;
-    }
-    
-    .legend {
-      font-size: 12px;
-    }
+  .detail-box {
+    width: 400px;        
+    height: 500px;       
+    border: 1px solid #888;
+    margin-left: 20px;
+    padding: 15px;
+    float: left;
+    background-color: white;
+    overflow: visible;
+  }
+
+  .detail-header {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+  
+  /* Modified slider container to center within larger box */
+  .slider-container {
+    width: 350px;
+    margin: 20px auto;
+  }
+  
+  #year-slider {
+    width: 100%;
+  }
+  
+  #year-label {
+    text-align: center;
+    font-size: 18px;
+    margin: 10px 0;
+  }
+  
+  /* Modified pie chart container to use full width */
+  .pie-chart-container {
+    width: 4-0px;
+    height: 400px;
+    margin: 0 auto;
+    overflow: visible;
+  }
+  
+  .main-container {
+    display: flex;
+    justify-content: center;
+  }
+  
+  /* Pie chart colors */
+  .slice {
+    stroke: #fff;
+    stroke-width: 1px;
+  }
+  
+  .legend {
+    font-size: 12px;
+  }
 </style>
 <body>
     <h1>Tracking US State-level Immigrant Populations Over Time</h1>
@@ -435,33 +433,36 @@ function createPieChart(stateName, year) {
   // Calculate total for percentages
   const total = pieData.reduce((sum, item) => sum + item[1], 0);
   
-  // Create SVG for pie chart
+  // Create SVG for pie chart - UPDATED to fill container
   const svgNS = "http://www.w3.org/2000/svg";
   const svg = document.createElementNS(svgNS, "svg");
-  svg.setAttribute("width", "350");
-  svg.setAttribute("height", "350");
-  svg.setAttribute("viewBox", "0 0 350 350");
+  svg.setAttribute("width", "100%");
+  svg.setAttribute("height", "100%");
+  svg.setAttribute("viewBox", "0 0 400 400");
+  svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
   svg.style.display = "block";
   
   // Add title
   const title = document.createElementNS(svgNS, "text");
-  title.setAttribute("x", "175");
-  title.setAttribute("y", "20");
+  title.setAttribute("x", "200");
+  title.setAttribute("y", "25");
   title.setAttribute("text-anchor", "middle");
   title.setAttribute("font-weight", "bold");
+  title.setAttribute("font-size", "16px");
   title.textContent = `Foreign-Born Population - ${year}`;
   svg.appendChild(title);
   
-  // Generate colors
+  // Generate colors with an extra color for "Other"
   const colors = [
     "#4e79a7", "#f28e2c", "#e15759", "#76b7b2", "#59a14f",
-    "#edc949", "#af7aa1", "#ff9da7", "#9c755f", "#bab0ab"
+    "#edc949", "#af7aa1", "#ff9da7", "#9c755f", "#bab0ab",
+    "#8dd3c7" // Extra color for "Other" category
   ];
   
-  // Draw pie slices
-  const centerX = 175;
-  const centerY = 175;
-  const radius = 100;
+  // Draw pie slices - UPDATED with larger radius and centered
+  const centerX = 200;
+  const centerY = 180; // Adjusted center point
+  const radius = 120; // Increased from 100 to 140
   let startAngle = 0;
   
   pieData.forEach((item, i) => {
@@ -492,7 +493,7 @@ function createPieChart(stateName, year) {
     path.setAttribute("stroke-width", "1");
     svg.appendChild(path);
     
-    // Add label
+    // Add label - UPDATED for better positioning
     if (percentage > 5) {  // Only add labels for slices that are big enough
       const labelAngle = startAngle + angle/2;
       const labelRadius = radius * 0.7;
@@ -504,19 +505,20 @@ function createPieChart(stateName, year) {
       text.setAttribute("y", labelY);
       text.setAttribute("text-anchor", "middle");
       text.setAttribute("fill", "white");
-      text.setAttribute("font-size", "11px");
-      text.textContent = `${percentage > 9 ? Math.round(percentage) + '%' : ''}`;
+      text.setAttribute("font-size", "12px"); // Slightly larger
+      text.setAttribute("font-weight", "bold");
+      text.textContent = `${percentage > 7 ? Math.round(percentage) + '%' : ''}`;
       svg.appendChild(text);
     }
     
     startAngle = endAngle;
   });
   
-  // Create legend
-  let legendY = 280;
-  const legendX = 25;
-  const legendItemsPerRow = 3;
-  const itemWidth = 110;
+    // legend
+  const legendY = 320; 
+  const legendX = 60;
+  const legendItemsPerRow = 2; 
+  const itemWidth = 200; 
   
   pieData.forEach((item, i) => {
     const [country, value] = item;
@@ -528,33 +530,25 @@ function createPieChart(stateName, year) {
     const rect = document.createElementNS(svgNS, "rect");
     rect.setAttribute("x", legendX + col * itemWidth);
     rect.setAttribute("y", legendY + row * 20);
-    rect.setAttribute("width", "10");
-    rect.setAttribute("height", "10");
+    rect.setAttribute("width", "12"); // Slightly larger
+    rect.setAttribute("height", "12");
     rect.setAttribute("fill", colors[i % colors.length]);
     svg.appendChild(rect);
     
-    // Text label
+    // Text label - no truncation needed with wider layout
     const text = document.createElementNS(svgNS, "text");
-    text.setAttribute("x", legendX + 15 + col * itemWidth);
-    text.setAttribute("y", legendY + 9 + row * 20);
-    text.setAttribute("font-size", "10px");
+    text.setAttribute("x", legendX + 18 + col * itemWidth);
+    text.setAttribute("y", legendY + 10 + row * 20);
+    text.setAttribute("font-size", "11px");
     
-    let label = country;
-    if (label.length > 10) {
-      label = label.substring(0, 8) + "...";
-    }
-    
-    text.textContent = `${label} (${percentage.toFixed(1)}%)`;
+    // No need to cut off country names with more space
+    text.textContent = `${country} (${percentage.toFixed(1)}%)`;
     svg.appendChild(text);
   });
-  
-  // Debug info
-  console.log("SVG created for pie chart");
   
   // Append to container
   pieChartContainer.appendChild(svg);
 }
-
 // Variable to keep track of the currently selected state
 let currentState = null;
 
