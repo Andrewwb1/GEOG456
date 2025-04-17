@@ -180,6 +180,9 @@
 <script src="transformed_by_state_year_country.js"></script> 
 <script>
 //Code made with some help from ChatGPT
+// Add a variable to track the currently hovered year index
+let hoveredYearIndex = 0;
+
 function makeGraph(data, stateName, allYears) {
   const container = document.getElementById(stateName);
   if (!container || !data[stateName]) return;
@@ -253,6 +256,9 @@ function makeGraph(data, stateName, allYears) {
     // Create group
     const group = document.createElementNS(svgNS, "g");
     group.setAttribute("pointer-events", "bounding-box"); // ensure group responds to mouse
+    
+    // Store the year index as a data attribute
+    group.dataset.yearIndex = i;
 
     group.appendChild(nonNativePoly); // draw non-native first (top area)
     group.appendChild(nativePoly);    // then native (bottom area)
@@ -267,6 +273,9 @@ function makeGraph(data, stateName, allYears) {
       nonNativePoly.setAttribute("stroke-width", "1.5");
       nonNativePoly.setAttribute("opacity", "0.8");
 
+      // Store the year index when hovered
+      hoveredYearIndex = parseInt(group.dataset.yearIndex);
+
       const nativeChange = percentNative2 - percentNative1;
       const nonNativeChange = percentNonNative2 - percentNonNative1;
       console.log(`${stateName} (${year1}→${year2}): Native Δ = ${nativeChange.toFixed(1)}%, Non-Native Δ = ${nonNativeChange.toFixed(1)}%`);
@@ -277,6 +286,18 @@ function makeGraph(data, stateName, allYears) {
       nativePoly.setAttribute("opacity", "1");
       nonNativePoly.setAttribute("stroke", "none");
       nonNativePoly.setAttribute("opacity", "1");
+    });
+
+    // Add click handler to individual slope section
+    group.addEventListener("click", (e) => {
+      e.stopPropagation(); // Prevent the container click from firing
+      
+      // Use the start year of this section
+      updateDetailBox(stateName, allYears[hoveredYearIndex]);
+      document.getElementById('year-slider').value = hoveredYearIndex;
+      document.getElementById('year-label').textContent = `Year: ${allYears[hoveredYearIndex]}`;
+      currentState = stateName;
+      document.querySelector('.detail-header').textContent = `${stateName} - Immigrant Population`;
     });
 
     svg.appendChild(group);
@@ -313,10 +334,13 @@ function makeGraph(data, stateName, allYears) {
 
   container.appendChild(svg);
 
+  // Default click for the whole state tile (if no specific slope is clicked)
   container.addEventListener("click", () => {
-    updateDetailBox(stateName, allYears[0]);
-    document.getElementById('year-slider').value = 0;
-    document.getElementById('year-label').textContent = `Year: ${allYears[0]}`;
+    // Use the hovered year index if available, otherwise default to 0
+    const yearIndex = (hoveredYearIndex !== null) ? hoveredYearIndex : 0;
+    updateDetailBox(stateName, allYears[yearIndex]);
+    document.getElementById('year-slider').value = yearIndex;
+    document.getElementById('year-label').textContent = `Year: ${allYears[yearIndex]}`;
     currentState = stateName;
     document.querySelector('.detail-header').textContent = `${stateName} - Immigrant Population`;
   });
