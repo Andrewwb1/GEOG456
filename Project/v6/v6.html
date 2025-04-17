@@ -6,14 +6,64 @@
     <title>Tracking US State-level Immigrant Populations Over Time</title>
 </head>
 <style>
+  .page-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
+  }
+  
+  .main-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+  }
   .map-container {
+    position: relative;
     display: grid;
     grid-template-columns: repeat(12, 80px);
     grid-auto-rows: 80px;
     gap: 5px;
     justify-content: center;
     margin: 30px auto;
-    width: max-content; 
+    width: max-content;
+  }
+  /* map legend */
+  .map-legend {
+    position: absolute;
+    bottom: 12%;
+    right: 1%;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 1px solid #aaa;
+    border-radius: 5px;
+    padding: 8px 12px;
+    font-size: 12px;
+    z-index: 1000;
+  }
+
+  .legend-title {
+    font-weight: bold;
+    margin-bottom: 6px;
+    text-align: center;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    margin: 4px 0;
+  }
+
+  .legend-color {
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+    border: 1px solid #888;
+  }
+
+  .legend-label {
+    font-size: 11px;
   }
 
   .state-tile {
@@ -40,7 +90,6 @@
     border: 1px solid #888;
     margin-left: 20px;
     padding: 15px;
-    float: left;
     background-color: white;
     overflow: visible;
   }
@@ -51,8 +100,7 @@
     margin-bottom: 15px;
     text-align: center;
   }
-  
-  /* Modified slider container to center within larger box */
+
   .slider-container {
     width: 350px;
     margin: 20px auto;
@@ -68,20 +116,21 @@
     margin: 10px 0;
   }
   
-  /* Modified pie chart container to use full width */
   .pie-chart-container {
-    width: 4-0px;
+    width: 400px;
     height: 400px;
     margin: 0 auto;
     overflow: visible;
   }
   
-  .main-container {
-    display: flex;
-    justify-content: center;
+  .notes {
+    width: 100%;
+    clear: both;
+    padding: 20px;
+    margin-top: 20px;
+    border-top: 1px solid #ccc;
   }
   
-  /* Pie chart colors */
   .slice {
     stroke: #fff;
     stroke-width: 1px;
@@ -93,12 +142,8 @@
 </style>
 <body>
     <h1>Tracking US State-level Immigrant Populations Over Time</h1>
-    Author: Andrew Boettcher <br><br>
-
-
-    <!-- <script src="Data/data.js"></script>
-    <script src="Data/simple_data.js"></script> -->
-<!-- I will change the classes to ID -->
+    Author: Andrew Boettcher
+    <!-- these are all the divs for each state, just coordinate map essentially with boxes -->
     <div class="main-container">
       <div class="map-container">
         <!-- Row 1 -->
@@ -167,6 +212,18 @@
         <div id="Hawaii" class="state-tile" style="grid-column: 1; grid-row: 8;">HI</div>
         <div id="Texas" class="state-tile" style="grid-column: 5; grid-row: 8;">TX</div>
         <div id="Florida" class="state-tile" style="grid-column: 10; grid-row: 8;">FL</div>
+        <!-- map legend -->
+        <div class="map-legend">
+          <div class="legend-title">Population</div>
+          <div class="legend-item">
+            <div class="legend-color" style="background-color: #e34724;"></div>
+            <div class="legend-label">Non-Native Born</div>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color" style="background-color: #3488d1;"></div>
+            <div class="legend-label">Native Born</div>
+          </div>
+        </div>
       </div>
       <div class="detail-box">
         <div class="detail-header">Select a state to view immigrant population details</div>
@@ -176,14 +233,15 @@
           <input type="range" id="year-slider" min="0" max="16" value="0" step="1">
         </div>
       </div>
-
+<!-- new data transformation with better nested formatting -->
 <script src="transformed_by_state_year_country.js"></script> 
 <script>
 //Code made with some help from ChatGPT
 // Add a variable to track the currently hovered year index
-let hoveredYearIndex = 0;
-
-function makeGraph(data, stateName, allYears) {
+let hoveredYearIndex = 0; //helper index 
+function makeGraph(data, stateName, allYears) { 
+  // this is the SVG creator function
+  // takes in data from js, and creates a uniform svg to display graph of immigrant population over time
   const container = document.getElementById(stateName);
   if (!container || !data[stateName]) return;
 
@@ -193,13 +251,13 @@ function makeGraph(data, stateName, allYears) {
   const padding = 0;
   const xStep = (width - 2 * padding) / (allYears.length - 1);
   const stateData = data[stateName];
-
+  // setting up the svg
   const svgNS = "http://www.w3.org/2000/svg";
   const svg = document.createElementNS(svgNS, "svg");
   svg.setAttribute("width", width);
   svg.setAttribute("height", height);
   svg.style.background = "#b6bcc2";
-
+  // iterating through year data
   for (let i = 0; i < allYears.length - 1; i++) {
     const year1 = allYears[i];
     const year2 = allYears[i + 1];
@@ -210,7 +268,7 @@ function makeGraph(data, stateName, allYears) {
 
     const x1 = padding + i * xStep;
     const x2 = padding + (i + 1) * xStep;
-
+    //  creating rates of change
     const total1 = Object.values(data1).reduce((a, b) => a + b, 0);
     const total2 = Object.values(data2).reduce((a, b) => a + b, 0);
     const native1 = data1["Native Born"] || 0;
@@ -273,7 +331,7 @@ function makeGraph(data, stateName, allYears) {
       nonNativePoly.setAttribute("stroke-width", "1.5");
       nonNativePoly.setAttribute("opacity", "0.8");
 
-      // Store the year index when hovered
+      // Store the year index when hovered, from helper at the top, need for corresponding to sie box
       hoveredYearIndex = parseInt(group.dataset.yearIndex);
 
       const nativeChange = percentNative2 - percentNative1;
@@ -289,6 +347,7 @@ function makeGraph(data, stateName, allYears) {
     });
 
     // Add click handler to individual slope section
+    // while you're hovering over a slope, if you click the pie chart will correspond to the time you were hovering over
     group.addEventListener("click", (e) => {
       e.stopPropagation(); // Prevent the container click from firing
       
@@ -303,7 +362,7 @@ function makeGraph(data, stateName, allYears) {
     svg.appendChild(group);
   }
 
-  // Add state abbreviation
+  // Add state abbreviation, earlier div with state abbreivation is covered
   const stateAbbreviations = {
     "Alabama": "AL", "Alaska": "AK", "Arizona": "AZ", "Arkansas": "AR",
     "California": "CA", "Colorado": "CO", "Connecticut": "CT", "Delaware": "DE",
@@ -347,6 +406,7 @@ function makeGraph(data, stateName, allYears) {
 }
 
 function createPieChart(stateName, year) {
+  // create pie chart representing immigrant make up at time in state on click, with a little help from AI
   const pieChartContainer = document.getElementById('pie-chart');
   pieChartContainer.innerHTML = '';
   
@@ -370,7 +430,7 @@ function createPieChart(stateName, year) {
     }
   }
   
-  // If no immigrant data
+  // If no immigrant data (some years missing)
   if (Object.keys(immigrantData).length === 0) {
     pieChartContainer.innerHTML = '<div style="text-align:center; padding-top:120px;">No immigrant data available for this year</div>';
     return;
@@ -401,7 +461,7 @@ function createPieChart(stateName, year) {
   // Calculate total for percentages
   const total = pieData.reduce((sum, item) => sum + item[1], 0);
   
-  // Create SVG for pie chart - UPDATED to fill container
+  // Create SVG for pie chart
   const svgNS = "http://www.w3.org/2000/svg";
   const svg = document.createElementNS(svgNS, "svg");
   svg.setAttribute("width", "100%");
@@ -561,9 +621,20 @@ setTimeout(() => {
 }, 500);
 
 </script>
+
+<div class="notes">
+  The above map was inspired by the work of 1Point21 Interactive for the Welcome Law Firm 
+  (https://welcomelawfirm.com/blog/where-americans-are-born/). The goal was to provide interactivity and added detail.
+
+  US Census Data was extracted from IPUMS for the period 1850-2020. Birthplace data was collected at the household level, 
+  then aggregated to the state level. Data was processed in R and transformed into a nest JSON. <br><br>
+  Data citation: Steven Ruggles, Sarah Flood, Matthew Sobek, Daniel Backman, Annie Chen, Grace Cooper, Stephanie Richards, Renae Rodgers, and 
+  Megan Schouweiler. IPUMS USA: Version 15.0 [dataset]. Minneapolis, MN: IPUMS, 2024. https://doi.org/10.18128/D010.V15.0 <br><br>
+
+  Many thanks to Dr. Javier A. Arce-Nazario and the GEOG456 Spring 2025 Class for your thoughtful input.
+  ChatGPT and ClaudAI were used for code writing beyond the scope of this course and iterative tasks. 
+
+</div>
+
 </body>
 </html>
-
-<!-- 4/15 notes -->
-<!-- Add highlight of tile that is hovered to show bigger with better detail-->
- <!-- email v4 github to prof -->
